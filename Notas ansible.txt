@@ -1,32 +1,30 @@
-InstalaciÛn de ansible.
+Instalaci√≥n de ansible.
 -----------------------
 
-Para que la instalaciÛn de asible sea correcta hay que aseguraarse de que la instalaciÛn de python estÈ bien. Para asegurarme de que todo lo necesario est·
-istalado primero he instalado python-pip, el gestor de mÛdulos de python. Esto ha instalado todos los requisitos necesarios.
+Para que la instalaci√≥n de asible sea correcta hay que aseguraarse de que la instalaci√≥n de python est√© bien. Para asegurarme de que todo lo necesario est√° instalado primero he instalado python-pip, el gestor de m√≥dulos de python. Esto ha instalado todos los requisitos necesarios.
 
-Para instalar ansible puedo hacerlo directamente desde un ubuntu con apt-get, asÌ se instala ansible con sus dependencias. Lo que recomienda la p·gina de
-ansible es lo siguiente para la instalaciÛn:
+Para instalar ansible puedo hacerlo directamente desde un ubuntu con apt-get, as√≠ se instala ansible con sus dependencias. Lo que recomienda la p√°gina de ansible es lo siguiente para la instalaci√≥n:
 
 apt-get install software-properties-common
 apt-add-repository ppa:ansible/ansible
 apt-get update
 apt-get install ansible
 
-Tras la instalaciÛn, al lanzar el comando ansible --version, obtengo la version instalada de ansible:
+Tras la instalaci√≥n, al lanzar el comando ansible --version, obtengo la version instalada de ansible:
 
 root@ubuntuconsolas:/etc/ansible# ansible --version
 ansible 2.0.0.1
   config file = /etc/ansible/ansible.cfg
   configured module search path = Default w/o overrides
 
-con estos comandos la instalaciÛn se hace bien, aunque a pesar de haber configurado el apt para usar proxy he necesitado abrir el acceso http y https para 
-la m·quina para poder aÒadir el repositorio.
+con estos comandos la instalaci√≥n se hace bien, aunque a pesar de haber configurado el apt para usar proxy he necesitado abrir el acceso http y https para 
+la m√°quina para poder a√±adir el repositorio.
 
-Directamente, seg˙n la documentaciÛn de ansible, una vez que est· instalado el software no necesitar· una base de datos y no habr· demonios que arrancar ni
-que deban estar ejecut·ndose. SE BASA EN SSH.
+Directamente, seg√∫n la documentaci√≥n de ansible, una vez que est√° instalado el software no necesitar√° una base de datos y no habr√° demonios que arrancar ni
+que deban estar ejecut√°ndose. SE BASA EN SSH.
 
-Donde he instalado ansible se dice que es la m·quina de control. Para empezar de forma sencilla edito el archivo que contiene mi lista de hosts o equipos 
-que quiero gestionar con ansible. Este archivo, tras la instalaciÛn, es /etc/ansible/hosts y, para probar, aÒado un apr de switches, con lo que lo dejo asÌ:
+Donde he instalado ansible se dice que es la m√°quina de control. Para empezar de forma sencilla edito el archivo que contiene mi lista de hosts o equipos 
+que quiero gestionar con ansible. Este archivo, tras la instalaci√≥n, es /etc/ansible/hosts y, para probar, a√±ado un apr de switches, con lo que lo dejo as√≠:
 
 ## Switches planta PTM.
 [switches-PTM]
@@ -37,22 +35,22 @@ Este archivo se denomina inventory. Una vez creado, con estos switches, lanzamos
 
 ansible all -m ping
 
-con lo que intentar· conectarse a los hosts del inventario con el usuario que estemos usando en este momento, por tanto intenta conectar con root. Para 
+con lo que intentar√° conectarse a los hosts del inventario con el usuario que estemos usando en este momento, por tanto intenta conectar con root. Para 
 conectar con otro usuario, por ejemplo el usuario cisco, el comando es:
 
 ansible all -m ping -u cisco
 
-como se basa en SSH y claves SSH, en el caso de que no podamos fijar claves SSH para SSH sin password puedo forzar que pida una contraseÒa:
+como se basa en SSH y claves SSH, en el caso de que no podamos fijar claves SSH para SSH sin password puedo forzar que pida una contrase√±a:
 
 ansible all -m ping -u cisco --ask-pass
 
-asÌ se conectar· con el usuario cisco y pedir· la password.
+as√≠ se conectar√° con el usuario cisco y pedir√° la password.
 
-Para poder usar un usuario diferente que el que est· lanzando ansible usarÈ la opciÛn -u pero ese usuario debe existir en la m·quina o m·quinas remotas, por
-tanto la soluciÛn sencilla es copiar la calve publica rsa ssh del usuario root en el fichero authorized_keys de todos los nodos o hosts que quiera gestionar
-con ansible. AsÌ me ahorro el tener que crear un usuario adicional en cada m·quina, aunque lo m·s correcto y seguro serÌa crearlo.
+Para poder usar un usuario diferente que el que est√° lanzando ansible usar√© la opci√≥n -u pero ese usuario debe existir en la m√°quina o m√°quinas remotas, por
+tanto la soluci√≥n sencilla es copiar la calve publica rsa ssh del usuario root en el fichero authorized_keys de todos los nodos o hosts que quiera gestionar
+con ansible. As√≠ me ahorro el tener que crear un usuario adicional en cada m√°quina, aunque lo m√°s correcto y seguro ser√≠a crearlo.
 
-En general, a pesar de ansible no requiere agente, si necesita que las m·quinas tengan al menos el mÛdulo simplejson o stdlib json. Cuando no est· instalado
+En general, a pesar de ansible no requiere agente, si necesita que las m√°quinas tengan al menos el m√≥dulo simplejson o stdlib json. Cuando no est√° instalado
 y probamos un comando remoto con ansible se recibe un error como el siguiente:
 
 bocdhcp.gmv.es | FAILED! => {
@@ -61,18 +59,18 @@ bocdhcp.gmv.es | FAILED! => {
     "msg": "Error: ansible requires the stdlib json or simplejson module, neither was found!"
 }
 
-Una forma r·pida de solucionar esto es instalarlo desde el propio ansible lanzando un comando como el siguiente (ten en cuenta que el gestor de paquetes del
+Una forma r√°pida de solucionar esto es instalarlo desde el propio ansible lanzando un comando como el siguiente (ten en cuenta que el gestor de paquetes del
 nodo o nodos remotos debe estar bien configurado y que el nombre del paquete puede variar):
 
 -> En un CentOS - ansible bocdhcp.gmv.es -m raw -a '/usr/bin/yum -y install python-simplejson'
 
-es muy importante tener en cuenta al lanzar estos comandos con el mÛdulo raw que, si un comando necesita interacciÛn en forma de pregunta que hay que 
-responder, es mejor usar las opciones que den las respuestas de manera autom·tica. En el caso de la instalaciÛn del paquete usar la opciÛn -y para que se 
-responda yes a la pregunta (esto tambiÈn te vale para la desinstalaciÛn).
+es muy importante tener en cuenta al lanzar estos comandos con el m√≥dulo raw que, si un comando necesita interacci√≥n en forma de pregunta que hay que 
+responder, es mejor usar las opciones que den las respuestas de manera autom√°tica. En el caso de la instalaci√≥n del paquete usar la opci√≥n -y para que se 
+responda yes a la pregunta (esto tambi√©n te vale para la desinstalaci√≥n).
 
-El archivo /etc/ansible/hosts es el inventario general y en Èl puedo fijar variables para los diferentes hosts que quiero administrar con ansible. Lo que se
+El archivo /etc/ansible/hosts es el inventario general y en √©l puedo fijar variables para los diferentes hosts que quiero administrar con ansible. Lo que se
 recomienda, sin embargo, es que en el archivo de inventario solo tenga los nombres de los hosts que quiero gestionar, sean o no los nombres de host y/o DNS
-de las m·quinas a administrar y que, desde la carpeta de configuraciÛn de ansible haga una carpeta para los hosts y otra para los grupos. Por ejemplo, lo que
+de las m√°quinas a administrar y que, desde la carpeta de configuraci√≥n de ansible haga una carpeta para los hosts y otra para los grupos. Por ejemplo, lo que
 he hecho yo es crear en la carpeta de los grupos, que debe llamarse group_vars, un archivo con el nombre de cada uno de los grupos que hay en el archivo 
 hosts. En esos archivos puede fijar las varaibles que deben aplicar a cada grupo. Por ejemplo, para los switches:
 
@@ -82,7 +80,7 @@ hosts. En esos archivos puede fijar las varaibles que deben aplicar a cada grupo
   ansible_user:   cisco
   ansible_ssh_pass:       lpdsplsdgmv*666*
 
- estas variables aplicar·n a todos los hosts que formen parte del grupo switchesptm.
+ estas variables aplicar√°n a todos los hosts que formen parte del grupo switchesptm.
 
 -Para los servidores dhcp, he hecho un grupo llamado dhcpservers en /etc/ansible/hosts y luego el archivo /etc/ansible/group_vars/dhcpservers con las 
  variables:
@@ -90,10 +88,10 @@ hosts. En esos archivos puede fijar las varaibles que deben aplicar a cada grupo
   ansible_connection:     ssh
   ansible_user:   root
 
- para asÌ usar estas variables al conectar con los hosts que forman parte del grupo dhcpservers.
+ para as√≠ usar estas variables al conectar con los hosts que forman parte del grupo dhcpservers.
 
-Luego puedo definir variables especÌficas y separadas para cada host, para esto, en el directorio /etc/ansible/host_vars, crearÈ un archivo cuyo nombre sea
-el del host que hay en /etc/ansible/hosts. AsÌ, por ejemplo, en el archivo /etc/ansible/hosts tengo el grupo dhcpservers con estos hosts:
+Luego puedo definir variables espec√≠ficas y separadas para cada host, para esto, en el directorio /etc/ansible/host_vars, crear√© un archivo cuyo nombre sea
+el del host que hay en /etc/ansible/hosts. As√≠, por ejemplo, en el archivo /etc/ansible/hosts tengo el grupo dhcpservers con estos hosts:
   
   ## Serviores DHCP.
   [dhcpservers]
@@ -107,50 +105,50 @@ el del host que hay en /etc/ansible/hosts. AsÌ, por ejemplo, en el archivo /etc/
   metadirlis
   metadirwar
 
-luego, para ada host, tengo un archivo con el mismo nombre, pero con los contenidos en funciÛn de cada host, asÌ por ejemplo, para metadir y metadir2 el 
+luego, para ada host, tengo un archivo con el mismo nombre, pero con los contenidos en funci√≥n de cada host, as√≠ por ejemplo, para metadir y metadir2 el 
 contenido de esos archivos es:
 
   /etc/ansible/host_vars/metadir				/etc/ansible/host_vars/metadir2
   ansible_host:   metadir-admin.gmv.es				ansible_host:   metadir2-admin.gmv.es
 
-asÌ controlarÈ que, aunque use nombres descriptivos para los hosts en el inventario, luego estos apuntar·n a los nombres DNS o direcciones IP correctas.
+as√≠ controlar√© que, aunque use nombres descriptivos para los hosts en el inventario, luego estos apuntar√°n a los nombres DNS o direcciones IP correctas.
 
-He hecho un grupo llamado vdiptm que contiene todos los servidores XenServer de virtualizaciÛn de escritorios y luego he creado otros tres grupos por cada
-pool aÒadiendo los hosts que forman cada pool. AsÌ tengo por un lado el grupo que engloba a todos, con el fichero correspondiente en /etc/ansible/group_vars
-con el nombre vdiptm y luego un archivo para cada host en /etc/ansible/host_vars. En estos ˙ltimos pongo como variable que el host es el nombre de m·quina en
-la red de admin y en el del grupo vdiptm pongo las opciones de conexion y el usuario a usar para conectar. Adicionalmente podrÌa crear tambiÈn un archivo 
+He hecho un grupo llamado vdiptm que contiene todos los servidores XenServer de virtualizaci√≥n de escritorios y luego he creado otros tres grupos por cada
+pool a√±adiendo los hosts que forman cada pool. As√≠ tengo por un lado el grupo que engloba a todos, con el fichero correspondiente en /etc/ansible/group_vars
+con el nombre vdiptm y luego un archivo para cada host en /etc/ansible/host_vars. En estos √∫ltimos pongo como variable que el host es el nombre de m√°quina en
+la red de admin y en el del grupo vdiptm pongo las opciones de conexion y el usuario a usar para conectar. Adicionalmente podr√≠a crear tambi√©n un archivo 
 para cada grupo que define cada pool y que tengan diferentes variables.
 
-Una vez que ya tengo establecido un inventario b·sico y puedo interactuar con los hosts puedo probar comandos simples de ansible. Estos comandos simples, o
-comandos ad-hoc como se llaman en la documentaciÛn, est·n pensados para lanzar uno o m·s comandos simples a varios hosts con una sola lÌnea. Es la forma m·s
+Una vez que ya tengo establecido un inventario b√°sico y puedo interactuar con los hosts puedo probar comandos simples de ansible. Estos comandos simples, o
+comandos ad-hoc como se llaman en la documentaci√≥n, est√°n pensados para lanzar uno o m√°s comandos simples a varios hosts con una sola l√≠nea. Es la forma m√°s
 sencilla de utilizar ansible.
 
-Lanzar un comando ad-hoc es tan f·cil como usar el comando ansible siguiendo una sintaxis como la siguiente:
+Lanzar un comando ad-hoc es tan f√°cil como usar el comando ansible siguiendo una sintaxis como la siguiente:
 
-  ansible host/grupo -m MÛdulo -a Argumentos -u nombreusuario --ask-pass
+  ansible host/grupo -m M√≥dulo -a Argumentos -u nombreusuario --ask-pass
 
-por ejemplo para lanzar un comando por ssh de fomra simple contra cartman harÌamos una comando ad-hoc como el siguiente, despuÈs de haber aÒadido la entrada
+por ejemplo para lanzar un comando por ssh de fomra simple contra cartman har√≠amos una comando ad-hoc como el siguiente, despu√©s de haber a√±adido la entrada
 de cartman en /etc/ansible/hosts:
 
   ansible cartman.gmv.es -m raw -a "df -h" -u root --ask-pass
 
-asÌ usarÈ como usuario root y me pedir· la password. El mÛdulo a usar es raw, que b·sicamente es mandar comandos por ssh y el argumento que se le pasa al
-mÛdulo es el comando a enviar por ssh, que en este caso es un df -h.
+as√≠ usar√© como usuario root y me pedir√° la password. El m√≥dulo a usar es raw, que b√°sicamente es mandar comandos por ssh y el argumento que se le pasa al
+m√≥dulo es el comando a enviar por ssh, que en este caso es un df -h.
 
-Un mÛdulo de prueba est·ndar, para comprobar que la m·quina ansible conecta con los hosts, es el mÛdulo ping, que se lanza:
+Un m√≥dulo de prueba est√°ndar, para comprobar que la m√°quina ansible conecta con los hosts, es el m√≥dulo ping, que se lanza:
 
  ansible poolc -m ping
  ansible vdiptm -m ping
 
-Para este tipo de comandos es muy importante el usar comillas simples en vez de dobles si estamos usando variables, por ejemplo si el mÛdulo que usamos es el
-mÛdulo shell. Cuando use el mÛdulo shell y quiera usar variables QUE DEBEN EXPANDIRSE O EVALUARSE EN LOS HOSTS REMOTOS tengo que usar comillas simples.
+Para este tipo de comandos es muy importante el usar comillas simples en vez de dobles si estamos usando variables, por ejemplo si el m√≥dulo que usamos es el
+m√≥dulo shell. Cuando use el m√≥dulo shell y quiera usar variables QUE DEBEN EXPANDIRSE O EVALUARSE EN LOS HOSTS REMOTOS tengo que usar comillas simples.
 
-El mÛdulo copy me deja copiar archivos entre mi m·quina ansible y los hosts remotos. Por ejemplo, con este comando, copiarÌa el fichero /etc/ansible/hosts a 
+El m√≥dulo copy me deja copiar archivos entre mi m√°quina ansible y los hosts remotos. Por ejemplo, con este comando, copiar√≠a el fichero /etc/ansible/hosts a 
 la ruta remota /tmp/hosts.BORRAR en todos los hosts que forman parte del grupo poolc.
 
  ansible poolc -m copy -a "src=/etc/ansible/hosts dest=/tmp/hosts.BORRAR"
 
-si quiero manipular los permisos de dicho archivo usarÈ el mÛdulo file. Por ejemplo, cambio a 777 los permisos del archivo anterior:
+si quiero manipular los permisos de dicho archivo usar√© el m√≥dulo file. Por ejemplo, cambio a 777 los permisos del archivo anterior:
 
  ansible poolc -m file -a "dest=/tmp/hosts.BORRAR mode=777"
 
@@ -158,37 +156,37 @@ ahora, con el siguiente comando, cambio el modo y el propietario de ese archivo:
 
  ansible poolc -m file -a "dest=/tmp/hosts.BORRAR mode=700 owner=qemu group=wheel"
 
-y por ˙ltimo, con el siguiente comando, podrÈ borrar ese fichero en todos esos hosts:
+y por √∫ltimo, con el siguiente comando, podr√© borrar ese fichero en todos esos hosts:
 
  ansible poolc -m file -a "dest=/tmp/hosts.BORRAR state=absent"
 
-Hay muchos m·s mÛdulos, cons˙ltalos en la web de ansible. Por ejemplo hay un mÛduloque te permite interactuar directamente con yum, otros para la gestiÛn de
+Hay muchos m√°s m√≥dulos, cons√∫ltalos en la web de ansible. Por ejemplo hay un m√≥duloque te permite interactuar directamente con yum, otros para la gesti√≥n de
 usuarios y grupos o para realizar interacciones con sistemas de control de versiones como git o subversion y, si lo que quiero es controlar servicios de 
-forma remota puedo hacerlo con el mÛdulo service.
+forma remota puedo hacerlo con el m√≥dulo service.
 
 Para arrancar el servicio iptables en todos los equipos del poolc:
 
  ansible poolc -m service -a "name=iptables state=restarted"
 
-Para tareas que sÈ que van a tardar puedo hacer que se pongan en background y tengo la opciÛn de lanzar dichas tareas con la posibilidad de poder comprobar
+Para tareas que s√© que van a tardar puedo hacer que se pongan en background y tengo la opci√≥n de lanzar dichas tareas con la posibilidad de poder comprobar
 su estado mediante un polling. Por ejemplo:
 
  ansible all -B 1800 -P 60 -a "/usr/bin/long_running_operation --do-stuff"
 
-asÌ se especifica que la tarea se ejecutara durante 1800 segundos (30 minutos) y que se comprobar· su estado cada 60 segundos. Este comando me devuelve un
-identificador de tarea o job id. Si quiero lanzarlo sin polling solo tengo que especificar 0 con la opciÛn -P, pero si lo hago y m·s tarde decido que si 
-quiero hacer un pool del estado de la tarea puedo usar el mÛdulo async_status con el job id devuelto por el comando para saber el estado de la tarea.
+as√≠ se especifica que la tarea se ejecutara durante 1800 segundos (30 minutos) y que se comprobar√° su estado cada 60 segundos. Este comando me devuelve un
+identificador de tarea o job id. Si quiero lanzarlo sin polling solo tengo que especificar 0 con la opci√≥n -P, pero si lo hago y m√°s tarde decido que si 
+quiero hacer un pool del estado de la tarea puedo usar el m√≥dulo async_status con el job id devuelto por el comando para saber el estado de la tarea.
 
  ansible web1.example.com -m async_status -a "jid=JOB ID devuelto por el comando"
 
 PLAYBOOKS.
 ----------
 
-Los playbooks de ansible son b·sicamente un conjunto de directivas que permiten la configuraciÛn de m˙ltiples servidores remotos o la orquestaciÛn de alg˙n
+Los playbooks de ansible son b√°sicamente un conjunto de directivas que permiten la configuraci√≥n de m√∫ltiples servidores remotos o la orquestaci√≥n de alg√∫n
 proceso o procesos que involucran a muchos sistemas. Se escriben en YAML.
 
 Un fichero en YAML empieza siempre con --- y termina siempre con ..., son las cabeceras que indican su inicio y fin. 
-En general, en YAML, tengo listas y diccionarios. Una lista se represneta siempre asÌ:
+En general, en YAML, tengo listas y diccionarios. Una lista se represneta siempre as√≠:
 
 ---
 frutas:
@@ -198,7 +196,7 @@ frutas:
    - melon
 ...
 
-mientras que un diccionario es un conjunto de lÌneas en la forma clave: valor, por ejemplo:
+mientras que un diccionario es un conjunto de l√≠neas en la forma clave: valor, por ejemplo:
 
 - martin:
    name: Nombre
@@ -219,50 +217,50 @@ create_key: yes
 use_cvs: false
 needs_agent: no
 
-Solo es importante tener en cuenta que, si quiero usar el sÌmbolo : en una cadena entonces debo poner la cadena entre "".
-Para definir variables ansible usa "{{ }}", asÌ que siempre que quiera usar variables tendrÈ que especificarla asÌ.
+Solo es importante tener en cuenta que, si quiero usar el s√≠mbolo : en una cadena entonces debo poner la cadena entre "".
+Para definir variables ansible usa "{{ }}", as√≠ que siempre que quiera usar variables tendr√© que especificarla as√≠.
 
-De forma simple y resumida, un playbook est· compuesto por una o m·s plays, donde cada play contendr· una serie de tareas a realizar. Una tarea es solamente 
-una llamada a un mÛdulo de ansible. Un playbook se procesa de arriba hacia abajo.
+De forma simple y resumida, un playbook est√° compuesto por una o m√°s plays, donde cada play contendr√° una serie de tareas a realizar. Una tarea es solamente 
+una llamada a un m√≥dulo de ansible. Un playbook se procesa de arriba hacia abajo.
 
-Una de las definiciones b·sicas y fundamentales que hacen falta siempre en un play es los hosts a los que hay que aplicar el play asÌ como el usuario remoto
-que se usar· para realizar las tareas. Por tanto, cualquier play, debes empezarlo con:
+Una de las definiciones b√°sicas y fundamentales que hacen falta siempre en un play es los hosts a los que hay que aplicar el play as√≠ como el usuario remoto
+que se usar√° para realizar las tareas. Por tanto, cualquier play, debes empezarlo con:
 
 ---
 - hosts: poold
   remote_user: root
 
 aunque luego, para determinadas tareas, se puede especificar un usuario remoto diferente. Para las ejecuciones remotas, como no, se puede usar y especificar
-que hay que usar sudo, tanto para todo el play como para tareas especÌficas.
+que hay que usar sudo, tanto para todo el play como para tareas espec√≠ficas.
 
-Cada lista de tareas se ejecuta en orden, una cada vez, a todos los hosts especificados al comienzo del play. Cada tarea consistir· en ejecutar un mÛdulo y
-es importante tener en cuenta que los mÛdulos son idempotentes con lo que solo se cambian cosas si hay que cambiarlas. Esto lleva a que se puede volver a 
-lanzar un playbook muchas veces, ya que no se cambiar·n cosas ya cambiadas.
+Cada lista de tareas se ejecuta en orden, una cada vez, a todos los hosts especificados al comienzo del play. Cada tarea consistir√° en ejecutar un m√≥dulo y
+es importante tener en cuenta que los m√≥dulos son idempotentes con lo que solo se cambian cosas si hay que cambiarlas. Esto lleva a que se puede volver a 
+lanzar un playbook muchas veces, ya que no se cambiar√°n cosas ya cambiadas.
 
-Las tareas se definen de una forma muy sencilla, con un nombre, que es opcional y es la salida que dar· el procesado del playbook, el mÛdulo que se va a 
-ejecutar y los par·metros del mismo. Por ejemplo, para asegurar que el servicio apache se est· ejecutando, una tarea serÌa:
+Las tareas se definen de una forma muy sencilla, con un nombre, que es opcional y es la salida que dar√° el procesado del playbook, el m√≥dulo que se va a 
+ejecutar y los par√°metros del mismo. Por ejemplo, para asegurar que el servicio apache se est√° ejecutando, una tarea ser√≠a:
 
 tasks:
   - name: Arrancar apache si es necesario
     service: name=httpd state=running
 
-para los mÛdulos shell y command la sintaxis varÌa ya que no usan el formato clave=valor como el resto, asÌ, para asegurar que selinux est· deshabilitado, la
-tarea serÌa como:
+para los m√≥dulos shell y command la sintaxis var√≠a ya que no usan el formato clave=valor como el resto, as√≠, para asegurar que selinux est√° deshabilitado, la
+tarea ser√≠a como:
 
 tasks:
   - name: Deshabilitar selinux
     command: /sbin/setenforce 0
 
-Por ˙ltimo, se pueden definir notificaciones de tareas y manejadores para dichas notificaciones. Esto consiste en lanzar una tarea si, una tarea anterior se
-ha realizado correctamente. Por ejemplo, tenemos una tarea que copia el fichero de configuraciÛn de apache y, en el caso de que se ejecute la tarea de forma
-correcta, queremos que se lance otra para reiniciar el proceso apache. Para esto, la tarea de copia del fichero tendr· un notify que har· referencia al
+Por √∫ltimo, se pueden definir notificaciones de tareas y manejadores para dichas notificaciones. Esto consiste en lanzar una tarea si, una tarea anterior se
+ha realizado correctamente. Por ejemplo, tenemos una tarea que copia el fichero de configuraci√≥n de apache y, en el caso de que se ejecute la tarea de forma
+correcta, queremos que se lance otra para reiniciar el proceso apache. Para esto, la tarea de copia del fichero tendr√° un notify que har√° referencia al
 handler correspondiente:
 
 tasks:
   - name: Copiar fichero de configuracion apache
     copy: src=/srv/httpd/httpd.conf.ALL dest=/etc/httpd/httpd.conf
     notify:
-       - restart apache      <--- REFERENCIA A MI HANDLER POSTERIOR. ESTO SE HAR¡ SOLO SI EL FICHERO SE CAMBIA.
+       - restart apache      <--- REFERENCIA A MI HANDLER POSTERIOR. ESTO SE HAR√Å SOLO SI EL FICHERO SE CAMBIA.
 ......
 
 handlers:
@@ -271,12 +269,12 @@ handlers:
 
 estos handlers se ejecutan siempre al final del playbook, cuando se hayan ejecutado todos los plays del playbook.
 
-Para ejecutar un playbook usarÈ el comando ansible-playbook con el nombre del playbook.
+Para ejecutar un playbook usar√© el comando ansible-playbook con el nombre del playbook.
 
   ansible-playbook fichero_playbook -f Paralelismo
 
 Ejemplo de playbook. Como ejemplo de playbook sencillo voy a hacer uno que copie el archivo resolv.conf correcto y cree el directorio /backup para los 
-backups de thumper, en todos los hosts ssoo que tenemos. En este caso el playbook deberÌa ser:
+backups de thumper, en todos los hosts ssoo que tenemos. En este caso el playbook deber√≠a ser:
 
 ---
 
@@ -290,7 +288,7 @@ backups de thumper, en todos los hosts ssoo que tenemos. En este caso el playboo
       file: dest=/backup state=directory mode=755
 ...
 
-una vez escrito puedo comprobar si es correcto con la opciÛn --syntax-check:
+una vez escrito puedo comprobar si es correcto con la opci√≥n --syntax-check:
 
   ansible-playbook basic_vdi.yaml --syntax-check
 
@@ -342,12 +340,12 @@ ssoo9                      : ok=3    changed=1    unreachable=0    failed=0
 
 
 Como no ha podido conectar correctamente con los hosts ssoo11, ssoo12, ssoo13, ssoo14 el campo changed es 0 para ellos, no se ha cambiado nada en ellos. En
-el host ssoo15 changed es 2 porque hemos copiado el archivo y creado el directorio y en el resto el changed es solo 1 porque el directorio ya existÌa y solo
-se ha cambiado el archivo, haciÈndose adem·s una copia por si acaso. En los equipos que ha fallado, ha sido porque no estaba la clave ssh en esos hosts, una
-vez que lo he corregido, si lo vuelvo a lanzar solo modificar· los hosts que antes no ha podido modificar y los otros los dejar· como estaban.
+el host ssoo15 changed es 2 porque hemos copiado el archivo y creado el directorio y en el resto el changed es solo 1 porque el directorio ya exist√≠a y solo
+se ha cambiado el archivo, haci√©ndose adem√°s una copia por si acaso. En los equipos que ha fallado, ha sido porque no estaba la clave ssh en esos hosts, una
+vez que lo he corregido, si lo vuelvo a lanzar solo modificar√° los hosts que antes no ha podido modificar y los otros los dejar√° como estaban.
 
 Lo lanzo de nuevo, y en este caso ya solo aparecen como change, con valor 1, los que fallaron antes y en los que solo se ha copiado el archivo ya que el
-directorio ya existÌa:
+directorio ya exist√≠a:
 
 
 TASK [Copia el archivo hosts correcto] *****************************************
@@ -386,7 +384,7 @@ ssoo9                      : ok=3    changed=0    unreachable=0    failed=0
 Definiendo variables.
 ---------------------
 
-En el inventario puedo definir variables, tanto variables especÌficas para hosts como variables que apliquen a grupos enteros. Para definir las variables que
+En el inventario puedo definir variables, tanto variables espec√≠ficas para hosts como variables que apliquen a grupos enteros. Para definir las variables que
 aplican a un grupo solo tengo que definir una entrada como la siguiente en el archivo de inventario:
 
 [grupo]
@@ -399,13 +397,13 @@ var1=valor1
 var2=valor2
 var3=valor3
 
-Para poder organizar los hosts en grupos, y aplicar variables especÌficas a cada uno de ellos en funciÛn de localizaciÛn, red, organizaciÛn, etc... puedo
-hacer grupos de grupos. El problema est· en que un grupo, contenido en otro grupo, no se expande, es decir, si yo creo un grupo de hosts y luego ese grupo
+Para poder organizar los hosts en grupos, y aplicar variables espec√≠ficas a cada uno de ellos en funci√≥n de localizaci√≥n, red, organizaci√≥n, etc... puedo
+hacer grupos de grupos. El problema est√° en que un grupo, contenido en otro grupo, no se expande, es decir, si yo creo un grupo de hosts y luego ese grupo
 lo incluyo en otro grupo, no se expande el grupo a los hosts que lo forman.
 
-Una de los usos de las variables es el usar ficheros de plantillas. El ejmplo m·s f·cil y sencillo es el de un playbook que copia y/o crea los archivos 
-resolv.conf en m·quinas Linux/Unix en funciÛn de los servidores DNS que correspondan. AsÌ, por ejemplo, yo defino un grupo que se llama vdiptm, que contiene 
-todos los servidores ssoo que tenemos. Esto, como ya sÈ, est· definido en el inventario de ansible asÌ:
+Una de los usos de las variables es el usar ficheros de plantillas. El ejmplo m√°s f√°cil y sencillo es el de un playbook que copia y/o crea los archivos 
+resolv.conf en m√°quinas Linux/Unix en funci√≥n de los servidores DNS que correspondan. As√≠, por ejemplo, yo defino un grupo que se llama vdiptm, que contiene 
+todos los servidores ssoo que tenemos. Esto, como ya s√©, est√° definido en el inventario de ansible as√≠:
 
 [vdiptm]
 ssoo7
@@ -418,7 +416,7 @@ ssoo13
 ssoo14
 ssoo15
 
-luego, en el directorio group_vars, especifico un archivo que contiene las variables de ese grupo, asÌ que en el archivo /etc/ansible/group_vars/vdiptm tengo
+luego, en el directorio group_vars, especifico un archivo que contiene las variables de ese grupo, as√≠ que en el archivo /etc/ansible/group_vars/vdiptm tengo
 definido lo siguiente:
 
 ansible_connection:     ssh
@@ -437,18 +435,18 @@ nameserver {{ dns1_server }}
 nameserver {{ dns2_server }}
 search gmv.es
 
-y luego, en el playbook que se va a utilizar defino una tarea usando el mÛdulo template del siguiente modo:
+y luego, en el playbook que se va a utilizar defino una tarea usando el m√≥dulo template del siguiente modo:
 
     - name: Copia el archivo resolv.conf correcto
       template: src=/etc/ansible/templates/resolv.conf.j2 dest=/tmp/resolv.conf backup=yes
 
-de este modo, al usar el mÛdulo template, lo que hace ansible es buscar una variable que se llame igual que las que aparecen en el archivo de template y lo
-sustituir· por los valores que hayamos definido en el archivo de variables de ese grupo, en este caso las variables que hay definidas en el archivo de
+de este modo, al usar el m√≥dulo template, lo que hace ansible es buscar una variable que se llame igual que las que aparecen en el archivo de template y lo
+sustituir√° por los valores que hayamos definido en el archivo de variables de ese grupo, en este caso las variables que hay definidas en el archivo de
 variables del grupo vdiptm -> /etc/ansible/group_vars/vdiptm.
 
 Ahora, para seguir con el uso de variables, voy a definir otro fichero de template para el archivo hosts pero, en este caso, voy a usar variables que deben
-ser locales al hot remoto. Una forma sencilla de ver las variables locales de un hot remoto es usar el mÛdulo setup como comando ad-hoc. Con este mÛdulo se
-obtienen lo que ansible llama facts, o lo que es lo mismo, la configuraciÛn del host remoto. AsÌ, si lanzo un comando ad-hoc ansible con el mÛdulo setup
+ser locales al hot remoto. Una forma sencilla de ver las variables locales de un hot remoto es usar el m√≥dulo setup como comando ad-hoc. Con este m√≥dulo se
+obtienen lo que ansible llama facts, o lo que es lo mismo, la configuraci√≥n del host remoto. As√≠, si lanzo un comando ad-hoc ansible con el m√≥dulo setup
 tengo una salida como la siguiente (esta recotada claro, que saca un huevode cosas):
 
 ansible ssoo10 -m setup | more
@@ -473,13 +471,13 @@ ssoo10 | SUCCESS => {
         "ansible_bios_date": "02/06/2014",
 
 voy a crear, por tanto, una plantilla para copiar el archivo hosts a los equipos que formen parte del grupo vdiptm donde se especifique el host con su ip a
-partir de una variable local del propio host. Es decir, si no me equivoco, deberÌa poder crear una plantilla como esta:
+partir de una variable local del propio host. Es decir, si no me equivoco, deber√≠a poder crear una plantilla como esta:
 
 127.0.0.1 localhost localhost.localdomain
 {{ ansible_default_ipv4.address }} {{ ansible_hostname }} {{ ansible_fqdn }}
 10.22.2.51 thumper thumper.gmv.es
 
-y defino una nueva tarea en el playbook usando el mÛdulo template del siguiente modo:
+y defino una nueva tarea en el playbook usando el m√≥dulo template del siguiente modo:
 
     - name: Copia el archivo hosts correcto
       template: src=/etc/ansible/templates/hosts.vdiptm.j2 dest=/tmp/hosts backup=yes
@@ -487,9 +485,9 @@ y defino una nueva tarea en el playbook usando el mÛdulo template del siguiente 
 de esta manera ansible es capaz de sustituir los valores que se corresponden al host local remoto sin problemas.
 
 Por tanto, de forma resumida, puedo definir variables para grupos en los ficheros contenidos en group_vars, darles el nombre que yo quiera a dichas variables
-y los valores que necesite para dichas variables. Luego, en las plantillas, solo tendrÈ que especificar los nombres de esas variables como {{ nombre_var }}
-y especificar en la tarea correspondiente el mÛdule template. Las variables que define el propio ansible de cada host remoto, que puedo obtener con el 
-modulo setup, tambiÈn puedo usarlas directamente en una plantilla.
+y los valores que necesite para dichas variables. Luego, en las plantillas, solo tendr√© que especificar los nombres de esas variables como {{ nombre_var }}
+y especificar en la tarea correspondiente el m√≥dule template. Las variables que define el propio ansible de cada host remoto, que puedo obtener con el 
+modulo setup, tambi√©n puedo usarlas directamente en una plantilla.
 
 Por tanto, ahora, tengo el siguiente playbook para el grupo de hosts vdiptm:
 
@@ -506,7 +504,7 @@ Por tanto, ahora, tengo el siguiente playbook para el grupo de hosts vdiptm:
       file: dest=/backup state=directory mode=755
 ...
 
-y como templates definidas, que podrÌan usarse con cualquier grupo de hosts, tengo las siguientes:
+y como templates definidas, que podr√≠an usarse con cualquier grupo de hosts, tengo las siguientes:
 
   /etc/ansible/templates/hosts.vdiptm.j2
   127.0.0.1 localhost localhost.localdomain
@@ -519,16 +517,16 @@ y como templates definidas, que podrÌan usarse con cualquier grupo de hosts, ten
   nameserver {{ dns2_server }}
   search gmv.es
 
-En estas plantillas solo tienes que considerar que lo que har· ansible ser· usar las variables definidas, que coincidan con el nombre de la variable, en las
-plantillas que uses. Esas variables podrÈ haberlas definido yo o bien ser variables propias de ansible, como las que se obtienen cuando uso el mÛdulo setup
+En estas plantillas solo tienes que considerar que lo que har√° ansible ser√° usar las variables definidas, que coincidan con el nombre de la variable, en las
+plantillas que uses. Esas variables podr√© haberlas definido yo o bien ser variables propias de ansible, como las que se obtienen cuando uso el m√≥dulo setup
 para obtener los facts del host remoto.
 
-Playbook para el cambio de direccionamiento de una delegaciÛn.
+Playbook para el cambio de direccionamiento de una delegaci√≥n.
 --------------------------------------------------------------
 
-Voy a hacer un playbook para cambiar la configuraciÛn de los recursos de DHCP y METADIR de los clusters de firewalls en las delegaciones.
+Voy a hacer un playbook para cambiar la configuraci√≥n de los recursos de DHCP y METADIR de los clusters de firewalls en las delegaciones.
 
-Un firewall de delegaciÛn tiene el servicio DHCP siempre, con lo que tengo que cambiar esa configuraciÛn. Para ello defino un playbook con estas tareas:
+Un firewall de delegaci√≥n tiene el servicio DHCP siempre, con lo que tengo que cambiar esa configuraci√≥n. Para ello defino un playbook con estas tareas:
 
   tasks:
     - name: Parar el recurso DHCP.
@@ -582,34 +580,34 @@ Un firewall de delegaciÛn tiene el servicio DHCP siempre, con lo que tengo que c
       command: /usr/sbin/crm resource start METADIR
 
 
-como no hay un mÛdulo especÌfico para controlar un cluster heartbeat, usarÈ el mÛdulo command para hacer las configuraciones de los recursos del cluster.
+como no hay un m√≥dulo espec√≠fico para controlar un cluster heartbeat, usar√© el m√≥dulo command para hacer las configuraciones de los recursos del cluster.
 En este playbook uso un notify para que, en el caso de que no exista el recurso METADIR, es decir solo haya un servidor DHCP y no haya un servidor de 
-metadirectorio, solo haga la parte del DHCP y la del metadirectorio opase de ella. Para esto se usa el notify, que har· que se llamen a los handlers que hay
+metadirectorio, solo haga la parte del DHCP y la del metadirectorio opase de ella. Para esto se usa el notify, que har√° que se llamen a los handlers que hay
 al final del playbook solo si la tarea en la que esta incluido el notify se ejecuta con exito.
 A lo largo de este playbook se usan variables definidas en el fichero de grupo BCN, al que pertenecen los dos hosts donde se va a lanzar el playbook (esto
-hay que controlarlo al estar en cluster los dos), asÌ como variables que son facts de las m·quinas remotas. En las plantillas de los archivos que se usan
-tambiÈn se usan dichas variables.
+hay que controlarlo al estar en cluster los dos), as√≠ como variables que son facts de las m√°quinas remotas. En las plantillas de los archivos que se usan
+tambi√©n se usan dichas variables.
 
 La idea de este playbook es que se pueda usar tanto para clusters que tengan el DHCP y el METADIRECTORIO como aquellos que solo tengan el DHCP. Por tanto, 
-para asegurar que el playbook se ejecuta aunque el comando de parada del servicio de METADIRECTORIO falle, se especifica la lÌnea ignore_errors a yes. Con
-esta lÌnea, si el recurso no existe, se producir· un error PERO CONTINUAR¡ la ejecuciÛn del playbook PERO SIN LANZARSE LOS HANDLERS ya que la tarea no se
-ha ejecutado con Èxito. En caso de que se ejecute correctamente la tarea el notify lanzar· los handlers asociados al final del playbook.
+para asegurar que el playbook se ejecuta aunque el comando de parada del servicio de METADIRECTORIO falle, se especifica la l√≠nea ignore_errors a yes. Con
+esta l√≠nea, si el recurso no existe, se producir√° un error PERO CONTINUAR√Å la ejecuci√≥n del playbook PERO SIN LANZARSE LOS HANDLERS ya que la tarea no se
+ha ejecutado con √©xito. En caso de que se ejecute correctamente la tarea el notify lanzar√° los handlers asociados al final del playbook.
 
 Siguiendo con este playbook es importante considerar que estoy configurando recursos de un cluster y que el playbook es para dos hosts, con lo que si no lo
-controlo de alg˙n modo, lanazarÌa m·s de una vez los comandos de cluster, lo que no tiene sentido ya que podrÌa lanzarse a la vez en los dos con los posibles
+controlo de alg√∫n modo, lanazar√≠a m√°s de una vez los comandos de cluster, lo que no tiene sentido ya que podr√≠a lanzarse a la vez en los dos con los posibles
 problemas que eso pudiese ocasionar. Tengo que asegurar que las tareas que tienen que ver con el cluster se lancen en solo uno de los dos nodos. Para esto
-se pueden usar las opciones de configuraciÛn de tareas delegate_to y run_once. Por tanto, si quiero asegurarme de que en un cluster heartbeat, que repito 
-haces asÌ por que no hay un mÛdulo especÌfico en ansible, los comandos del cluster se ejecuten SOLO EN UNO DE LOS NODOS, tengo que especificar en la tarea 
-correspondiente las opciones delegate_to y run_once o usar una condiciÛn con when. Por ejemplo:
+se pueden usar las opciones de configuraci√≥n de tareas delegate_to y run_once. Por tanto, si quiero asegurarme de que en un cluster heartbeat, que repito 
+haces as√≠ por que no hay un m√≥dulo espec√≠fico en ansible, los comandos del cluster se ejecuten SOLO EN UNO DE LOS NODOS, tengo que especificar en la tarea 
+correspondiente las opciones delegate_to y run_once o usar una condici√≥n con when. Por ejemplo:
 
- *La forma m·s sencilla que se me ocurre es:
+ *La forma m√°s sencilla que se me ocurre es:
 
    - name: Arrancar recurso METADIR.
      command: /usr/sbin/crm resource start METADIR
      delegate_to: fw1bcn
      run_once: true
 
-y esto serÌa para todas las tareas que impliquen comandos de heartbeat. Por tanto el playbook para el cambio de direccionamiento IP serÌa:
+y esto ser√≠a para todas las tareas que impliquen comandos de heartbeat. Por tanto el playbook para el cambio de direccionamiento IP ser√≠a:
 
 
 
